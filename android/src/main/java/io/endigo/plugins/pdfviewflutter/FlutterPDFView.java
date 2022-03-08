@@ -1,6 +1,7 @@
 package io.endigo.plugins.pdfviewflutter;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.View;
 import android.net.Uri;
 
@@ -48,12 +49,22 @@ public class FlutterPDFView implements PlatformView, MethodCallHandler {
         }
 
         if (config != null) {
+            boolean isLandscape;
+            int orientation = context.getResources().getConfiguration().orientation;
+            isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
+            boolean dualMode = getBoolean(params, "dualPageMode");
+            boolean showCover = getBoolean(params, "showCover");
+
             config
+                    .landscapeOrientation(isLandscape)
+                    .dualPageMode(getBoolean(params, "dualPageMode"))
+                    .displayAsBook(showCover)
+                    .fitEachPage(dualMode ? false : getBoolean(params, "fitEachPage"))
+                    .autoSpacing(dualMode ? false : getBoolean(params, "autoSpacing"))
                     .enableSwipe(getBoolean(params, "enableSwipe"))
                     .swipeHorizontal(getBoolean(params, "swipeHorizontal"))
                     .password(getString(params, "password"))
                     .nightMode(getBoolean(params, "nightMode"))
-                    .autoSpacing(getBoolean(params, "autoSpacing"))
                     .pageFling(getBoolean(params, "pageFling"))
                     .pageSnap(getBoolean(params, "pageSnap"))
                     .pageFitPolicy(getFitPolicy(params))

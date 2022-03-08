@@ -27,6 +27,9 @@ class PDFView extends StatefulWidget {
     this.onPageError,
     this.onLinkHandler,
     this.gestureRecognizers,
+    this.dualPageMode = false,
+    this.displayAsBook = false,
+    this.dualPageWithBreak = false,
     this.enableSwipe = true,
     this.swipeHorizontal = false,
     this.password,
@@ -75,6 +78,9 @@ class PDFView extends StatefulWidget {
   final bool pageFling;
   final bool pageSnap;
   final int defaultPage;
+  final bool dualPageMode;
+  final bool displayAsBook;
+  final bool dualPageWithBreak;
   final FitPolicy fitPolicy;
   final bool fitEachPage;
   final bool preventLinkNavigation;
@@ -164,6 +170,9 @@ class _PDFViewSettings {
       this.pageFling,
       this.pageSnap,
       this.defaultPage,
+      this.dualPageMode,
+      this.displayAsBook,
+      this.dualPageWithBreak,
       this.fitPolicy,
       this.fitEachPage,
       this.preventLinkNavigation});
@@ -178,6 +187,9 @@ class _PDFViewSettings {
         pageFling: widget.pageFling,
         pageSnap: widget.pageSnap,
         defaultPage: widget.defaultPage,
+        dualPageMode: widget.dualPageMode,
+        displayAsBook: widget.displayAsBook,
+        dualPageWithBreak: widget.dualPageWithBreak,
         fitPolicy: widget.fitPolicy,
         preventLinkNavigation: widget.preventLinkNavigation);
   }
@@ -190,6 +202,9 @@ class _PDFViewSettings {
   final bool? pageFling;
   final bool? pageSnap;
   final int? defaultPage;
+  final bool? dualPageMode;
+  final bool? displayAsBook;
+  final bool? dualPageWithBreak;
   final FitPolicy? fitPolicy;
   final bool? fitEachPage;
   final bool? preventLinkNavigation;
@@ -204,6 +219,9 @@ class _PDFViewSettings {
       'pageFling': pageFling,
       'pageSnap': pageSnap,
       'defaultPage': defaultPage,
+      'dualPageMode': dualPageMode,
+      'dualPageWithBreak': dualPageWithBreak,
+      'showCover': displayAsBook,
       'fitPolicy': fitPolicy.toString(),
       'fitEachPage': fitEachPage,
       'preventLinkNavigation': preventLinkNavigation
@@ -220,6 +238,9 @@ class _PDFViewSettings {
     }
     if (pageSnap != newSettings.pageSnap) {
       updates['pageSnap'] = newSettings.pageSnap;
+    }
+    if (dualPageMode != newSettings.dualPageMode) {
+      updates['dualPageMode'] = newSettings.dualPageMode;
     }
     if (preventLinkNavigation != newSettings.preventLinkNavigation) {
       updates['preventLinkNavigation'] = newSettings.preventLinkNavigation;

@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
     }
 }
 
@@ -35,6 +35,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.liqwik:AndroidPdfViewer:master-SNAPSHOT'
+    implementation 'com.github.liqwik:AndroidPdfViewer:3.2.0'
 }
 
