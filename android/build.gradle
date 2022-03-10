@@ -35,6 +35,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.liqwik:AndroidPdfViewer:master-SNAPSHOT'
+    implementation 'com.github.liqwik:AndroidPdfViewer:43f518c'
 }
 
