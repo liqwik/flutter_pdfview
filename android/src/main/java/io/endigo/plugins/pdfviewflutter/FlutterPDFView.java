@@ -2,6 +2,7 @@ package io.endigo.plugins.pdfviewflutter;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.View;
 import android.net.Uri;
 
@@ -49,18 +50,15 @@ public class FlutterPDFView implements PlatformView, MethodCallHandler {
         }
 
         if (config != null) {
-            boolean isLandscape;
-            int orientation = context.getResources().getConfiguration().orientation;
-            isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
             boolean dualMode = getBoolean(params, "dualPageMode");
             boolean showCover = getBoolean(params, "showCover");
 
             config
-                    .landscapeOrientation(isLandscape)
-                    .dualPageMode(getBoolean(params, "dualPageMode"))
+                    .landscapeOrientation(false)
+                    .dualPageMode(dualMode)
                     .displayAsBook(showCover)
-                    .fitEachPage(dualMode ? false : getBoolean(params, "fitEachPage"))
-                    .autoSpacing(dualMode ? false : getBoolean(params, "autoSpacing"))
+                    .fitEachPage(!dualMode)
+                    .autoSpacing(!dualMode)
                     .enableSwipe(getBoolean(params, "enableSwipe"))
                     .swipeHorizontal(getBoolean(params, "swipeHorizontal"))
                     .password(getString(params, "password"))
@@ -113,6 +111,12 @@ public class FlutterPDFView implements PlatformView, MethodCallHandler {
     @Override
     public void onMethodCall(MethodCall methodCall, Result result) {
         switch (methodCall.method) {
+            case "isOnDualPageMode":
+                isOnDualPageMode(result);
+                break;
+            case "getCurrentOrientation":
+                getCurrentOrientation(result);
+                break;
             case "pageCount":
                 getPageCount(result);
                 break;
@@ -121,6 +125,12 @@ public class FlutterPDFView implements PlatformView, MethodCallHandler {
                 break;
             case "setPage":
                 setPage(methodCall, result);
+                break;
+            case "nextPage":
+                nextPage(result);
+                break;
+            case "prevPage":
+                prevPage(result);
                 break;
             case "updateSettings":
                 updateSettings(methodCall, result);
@@ -131,12 +141,27 @@ public class FlutterPDFView implements PlatformView, MethodCallHandler {
         }
     }
 
+    void isOnDualPageMode(Result result) {
+        result.success(pdfView.isOnDualPageMode());
+    }
+    void getCurrentOrientation(Result result) { result.success(pdfView.getCurrentOrientation());}
+
     void getPageCount(Result result) {
         result.success(pdfView.getPageCount());
     }
 
     void getCurrentPage(Result result) {
         result.success(pdfView.getCurrentPage());
+    }
+
+    void nextPage(Result result) {
+        pdfView.nextPage();
+        result.success(true);
+    }
+
+    void prevPage(Result result) {
+        pdfView.prevPage();
+        result.success(true);
     }
 
     void setPage(MethodCall call, Result result) {
@@ -185,7 +210,7 @@ public class FlutterPDFView implements PlatformView, MethodCallHandler {
     }
 
     boolean getBoolean(Map<String, Object> params, String key) {
-        return params.containsKey(key) ? (boolean) params.get(key) : false;
+        return params.containsKey(key) && (boolean) params.get(key);
     }
 
     String getString(Map<String, Object> params, String key) {

@@ -312,6 +312,26 @@ class PDFViewController {
     return currentPage;
   }
 
+  Future<bool?> nextPage() async {
+    final bool? currentPage = await _channel.invokeMethod('nextPage');
+    return currentPage;
+  }
+
+  Future<bool?> prevPage() async {
+    final bool? currentPage = await _channel.invokeMethod('prevPage');
+    return currentPage;
+  }
+
+  Future<bool?> isOnDualPageMode() async {
+    final bool? result = await _channel.invokeMethod('isOnDualPageMode');
+    return result;
+  }
+
+  Future<int?> getCurrentOrientation() async {
+    final int? result = await _channel.invokeMethod('getCurrentOrientation');
+    return result;
+  }
+
   Future<bool?> setPage(int page) async {
     final bool? isSet =
         await _channel.invokeMethod('setPage', <String, dynamic>{
