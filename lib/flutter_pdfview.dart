@@ -268,7 +268,7 @@ class PDFViewController {
     switch (call.method) {
       case 'onRender':
         if (_widget.onRender != null) {
-          _widget.onRender!(call.arguments['pages']);
+          _widget.onRender!(call.arguments['pages'] as int);
         }
 
         return null;
@@ -291,6 +291,7 @@ class PDFViewController {
         }
 
         return null;
+
       case 'onLinkHandler':
         if (_widget.onLinkHandler != null) {
           _widget.onLinkHandler!(call.arguments);
@@ -338,6 +339,36 @@ class PDFViewController {
       'page': page,
     });
     return isSet;
+  }
+
+  Future<bool?> setPageWithAnimation(int page) async {
+    final bool? isSet =
+        await _channel.invokeMethod('setPageWithAnimation', <String, dynamic>{
+      'page': page,
+    });
+    return isSet;
+  }
+
+  Future<bool?> resetZoom(int page) async {
+    final bool? isSet =
+        await _channel.invokeMethod('resetZoom', <String, dynamic>{
+      'page': page,
+    });
+    return isSet;
+  }
+
+  Future<bool?> setZoom(double zoom) async {
+    print("setting zoom to $zoom");
+    final bool? isSet =
+        await _channel.invokeMethod('setZoom', <String, dynamic>{
+      'newzoom': zoom,
+    });
+    return isSet;
+  }
+
+  Future<double?> getZoom() async {
+    final double? zoom = await _channel.invokeMethod('currentZoom');
+    return zoom;
   }
 
   Future<void> _updateWidget(PDFView widget) async {
