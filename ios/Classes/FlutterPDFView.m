@@ -77,7 +77,6 @@
         BOOL hasBreak = [args[@"dualPageWithBreak"] boolValue];
         NSInteger defaultPage = [args[@"defaultPage"] integerValue];
         NSString* filePath = args[@"filePath"];
-        NSString* backgroundColor = args[@"backgroundColor"];
 
         UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipe:)];
         swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
@@ -187,13 +186,6 @@
                 }
                  _pdfView.scaleFactor = scale;
 
-                if([backgroundColor isEqual:  @"black"]) {
-                    _pdfView.backgroundColor =[UIColor blackColor ];
-                }else if([backgroundColor isEqual:  @"white"]){
-                    _pdfView.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1];
-                }else {
-                    _pdfView.backgroundColor = [UIColor blackColor];
-                }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf handleRenderCompleted:[NSNumber numberWithUnsignedLong: [document pageCount]]];
                 });
