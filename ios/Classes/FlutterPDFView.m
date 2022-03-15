@@ -44,6 +44,7 @@
     BOOL _enableSwipe;
     BOOL _dualPage;
     BOOL _hasCover;
+    BOOL _isLandscapeBook;
     CGSize pageSize;
 }
 
@@ -240,7 +241,8 @@
         [self getZoom:call result:result];
     } else if ([[call method] isEqualToString:@"setZoom"]) {
         [self setZoom:call result:result];
-
+    } else if ([[call method] isEqualToString:@"isLandscapeBook"]) {
+        [self isLandscapeBook:call result:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -262,6 +264,15 @@
     _pdfView.scaleFactor=_pdfView.scaleFactorForSizeToFit;
     result(nil);
 }
+
+- (void)isLandscapeBook:(FlutterMethodCall*)call result:(FlutterResult)result {
+    _isLandscapeBook = false;
+    if (pageSize.width > pageSize.height) {
+        _isLandscapeBook = true;
+    }
+    result([NSNumber numberWithBool:_isLandscapeBook]);
+}
+
 - (void)getPageWidth:(FlutterMethodCall*)call result:(FlutterResult)result {
     _pageWidth = [NSNumber numberWithFloat: pageSize.width*_pdfView.scaleFactor];
     result(_pageWidth);
