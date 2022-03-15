@@ -231,6 +231,10 @@
         [self resetZoom:call result:result];
     } else if ([[call method] isEqualToString:@"setPage"]) {
         [self setPage:call result:result];
+    } else if ([[call method] isEqualToString:@"nextPage"]) {
+        [self nextPage:call result:result];
+    } else if ([[call method] isEqualToString:@"prevPage"]) {
+        [self prevPage:call result:result];
     } else if ([[call method] isEqualToString:@"pageWidth"]) {
         [self getPageWidth:call result:result];
     } else if ([[call method] isEqualToString:@"pageHeight"]) {
@@ -298,6 +302,32 @@
 
     [_pdfView goToPage: [_pdfView.document pageAtIndex: page.unsignedLongValue ]];
     result(_currentPage);
+}
+
+- (void)nextPage:(FlutterMethodCall*)call result:(FlutterResult)result {
+    _currentPage = [NSNumber numberWithUnsignedLong: [_pdfView.document indexForPage: _pdfView.currentPage]];
+    int step = 1;
+    
+    if (pageSize.height > pageSize.width && UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        step = 2;
+    }
+    
+    [_pdfView goToPage: [_pdfView.document pageAtIndex: _currentPage.unsignedLongValue + step ]];
+    result([NSNumber numberWithBool:YES]);
+}
+
+- (void)prevPage:(FlutterMethodCall*)call result:(FlutterResult)result {
+    _currentPage = [NSNumber numberWithUnsignedLong: [_pdfView.document indexForPage: _pdfView.currentPage]];
+    
+    int step = 1;
+    
+    if (pageSize.height > pageSize.width && UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        step = 2;
+    }
+    
+    [_pdfView goToPage: [_pdfView.document pageAtIndex: _currentPage.unsignedLongValue - step ]];
+    result([NSNumber numberWithBool:YES]);
+
 }
 
 - (void)onUpdateSettings:(FlutterMethodCall*)call result:(FlutterResult)result {
