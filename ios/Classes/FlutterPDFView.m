@@ -44,7 +44,7 @@
     BOOL _enableSwipe;
     BOOL _dualPage;
     BOOL _hasCover;
-    BOOL _isLandscapeBook;
+    BOOL _isPortraitBookOnLandscapeMode;
     CGSize pageSize;
 }
 
@@ -241,8 +241,8 @@
         [self getZoom:call result:result];
     } else if ([[call method] isEqualToString:@"setZoom"]) {
         [self setZoom:call result:result];
-    } else if ([[call method] isEqualToString:@"isLandscapeBook"]) {
-        [self isLandscapeBook:call result:result];
+    } else if ([[call method] isEqualToString:@"isPortraitBookOnLandscapeMode"]) {
+        [self isPortraitBookOnLandscapeMode:call result:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -265,12 +265,12 @@
     result(nil);
 }
 
-- (void)isLandscapeBook:(FlutterMethodCall*)call result:(FlutterResult)result {
-    _isLandscapeBook = false;
-    if (pageSize.width > pageSize.height) {
-        _isLandscapeBook = true;
+- (void)isPortraitBookOnLandscapeMode:(FlutterMethodCall*)call result:(FlutterResult)result {
+    _isPortraitBookOnLandscapeMode = false;
+    if (pageSize.height > pageSize.width && UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        _isPortraitBookOnLandscapeMode = true;
     }
-    result([NSNumber numberWithBool:_isLandscapeBook]);
+    result([NSNumber numberWithBool:_isPortraitBookOnLandscapeMode]);
 }
 
 - (void)getPageWidth:(FlutterMethodCall*)call result:(FlutterResult)result {

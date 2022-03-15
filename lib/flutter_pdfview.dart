@@ -324,10 +324,10 @@ class PDFViewController {
     return currentPage;
   }
 
-  Future<bool?> isLandscapeBook() async {
-    final bool? isLandscapeBook =
-        await _channel.invokeMethod('isLandscapeBook');
-    return isLandscapeBook;
+  Future<bool?> isPortraitBookOnLandscapeMode() async {
+    final bool? isPortraitBookOnLandscapeMode =
+        await _channel.invokeMethod('isPortraitBookOnLandscapeMode');
+    return isPortraitBookOnLandscapeMode;
   }
 
   Future<bool?> nextPage() async {
