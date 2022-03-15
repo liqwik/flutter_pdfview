@@ -53,11 +53,11 @@
               binaryMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
     if ([super init]) {
         _viewId = viewId;
-        NSString* channelName = [NSString stringWithFormat:@"plugins.arnaudelub.io/pdfview_%lld", viewId];
+        NSString* channelName = [NSString stringWithFormat:@"plugins.endigo.io/pdfview_%lld", viewId];
         _channel = [FlutterMethodChannel methodChannelWithName:channelName binaryMessenger:messenger];
 
         _pdfView = [[PDFView alloc] initWithFrame:frame];
-        
+
         __weak __typeof__(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
             [weakSelf onMethodCall:call result:result];
@@ -68,9 +68,7 @@
            addObserver:self selector:@selector(orientationChanged:)
            name:UIDeviceOrientationDidChangeNotification
            object:[UIDevice currentDevice]];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChanged:) name:PDFViewPageChangedNotification object:_pdfView];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleZoomChanged:) name:PDFViewScaleChangedNotification object:_pdfView];
-        
+
         BOOL autoSpacing = [args[@"autoSpacing"] boolValue];
         BOOL dualPage = [args[@"dualPageMode"] boolValue];
         BOOL pageFling = [args[@"pageFling"] boolValue];
@@ -80,7 +78,7 @@
         NSInteger defaultPage = [args[@"defaultPage"] integerValue];
         NSString* filePath = args[@"filePath"];
         NSString* backgroundColor = args[@"backgroundColor"];
-        
+
         UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipe:)];
         swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
         [self.view addGestureRecognizer:swipeLeft];
@@ -88,7 +86,7 @@
         UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self  action:@selector(didSwipe:)];
         swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
         [self.view addGestureRecognizer:swipeRight];
-        
+
         if ([filePath isKindOfClass:[NSString class]]) {
             NSURL * sourcePDFUrl = [NSURL fileURLWithPath:filePath];
             PDFDocument * document = [[PDFDocument alloc] initWithURL: sourcePDFUrl];
@@ -199,15 +197,18 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf handleRenderCompleted:[NSNumber numberWithUnsignedLong: [document pageCount]]];
                 });
-                            
+
                 NSString* password = args[@"password"];
                 if ([password isKindOfClass:[NSString class]] && [_pdfView.document isEncrypted]) {
                     [_pdfView.document unlockWithPassword:password];
                 }
             }
         }
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChanged:) name:PDFViewPageChangedNotification object:_pdfView];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleZoomChanged:) name:PDFViewScaleChangedNotification object:_pdfView];
     }
-    
+
     return self;
 }
 
@@ -317,7 +318,7 @@
 - (void) orientationChanged:(NSNotification *)note
 {
        UIDevice * device = note.object;
-    
+
         //_pdfView.autoScales = YES;
           switch(device.orientation)
           {
@@ -325,10 +326,10 @@
              case UIDeviceOrientationPortraitUpsideDown:
 //                  _pdfView.displayMode = kPDFDisplaySinglePageContinuous;
                  break;
-                  
+
               case UIDeviceOrientationLandscapeLeft:
               case UIDeviceOrientationLandscapeRight:
-                  
+
 //                  _pdfView.displayMode = kPDFDisplayTwoUpContinuous;
                   break;
              default:

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 typedef PDFViewCreatedCallback = void Function(PDFViewController controller);
 typedef RenderCallback = void Function(int? pages);
@@ -12,6 +12,7 @@ typedef PageChangedCallback = void Function(int? page, int? total);
 typedef ErrorCallback = void Function(dynamic error);
 typedef PageErrorCallback = void Function(int? page, dynamic error);
 typedef LinkHandlerCallback = void Function(String? uri);
+typedef ZoomChangedCallback = void Function(double? zoom);
 
 enum FitPolicy { WIDTH, HEIGHT, BOTH }
 
@@ -26,6 +27,7 @@ class PDFView extends StatefulWidget {
     this.onError,
     this.onPageError,
     this.onLinkHandler,
+    this.onZoomChanged,
     this.gestureRecognizers,
     this.dualPageMode = false,
     this.displayAsBook = false,
@@ -39,7 +41,7 @@ class PDFView extends StatefulWidget {
     this.pageSnap = true,
     this.fitEachPage = true,
     this.defaultPage = 0,
-    this.fitPolicy = FitPolicy.WIDTH,
+    this.fitPolicy = FitPolicy.BOTH,
     this.preventLinkNavigation = false,
   })  : assert(filePath != null || pdfData != null),
         super(key: key);
@@ -51,6 +53,7 @@ class PDFView extends StatefulWidget {
   final PDFViewCreatedCallback? onViewCreated;
   final RenderCallback? onRender;
   final PageChangedCallback? onPageChanged;
+  final ZoomChangedCallback? onZoomChanged;
   final ErrorCallback? onError;
   final PageErrorCallback? onPageError;
   final LinkHandlerCallback? onLinkHandler;
@@ -239,6 +242,12 @@ class _PDFViewSettings {
     if (pageSnap != newSettings.pageSnap) {
       updates['pageSnap'] = newSettings.pageSnap;
     }
+    if (fitPolicy != newSettings.fitPolicy) {
+      updates['fitPolicy'] = newSettings.fitPolicy;
+    }
+    if (fitEachPage != newSettings.fitEachPage) {
+      updates['fitEachPage'] = newSettings.fitEachPage;
+    }
     if (dualPageMode != newSettings.dualPageMode) {
       updates['dualPageMode'] = newSettings.dualPageMode;
     }
@@ -275,7 +284,9 @@ class PDFViewController {
       case 'onPageChanged':
         if (_widget.onPageChanged != null) {
           _widget.onPageChanged!(
-              call.arguments['page'], call.arguments['total']);
+            call.arguments['page'] as int,
+            call.arguments['total'] as int,
+          );
         }
 
         return null;
@@ -287,16 +298,16 @@ class PDFViewController {
         return null;
       case 'onPageError':
         if (_widget.onPageError != null) {
-          _widget.onPageError!(call.arguments['page'], call.arguments['error']);
+          _widget.onPageError!(
+              call.arguments['page'] as int, call.arguments['error']);
         }
 
         return null;
 
-      case 'onLinkHandler':
-        if (_widget.onLinkHandler != null) {
-          _widget.onLinkHandler!(call.arguments);
+      case 'onZoomChanged':
+        if (_widget.onZoomChanged != null) {
+          _widget.onZoomChanged!(call.arguments['zoom'] as double);
         }
-
         return null;
     }
     throw MissingPluginException(
