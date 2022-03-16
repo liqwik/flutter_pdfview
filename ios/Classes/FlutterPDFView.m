@@ -102,8 +102,8 @@
                     _pdfView.displayDirection = kPDFDisplayDirectionVertical;
                 }
                 _pdfView.autoScales = autoSpacing;
-                _pdfView.minScaleFactor = _pdfView.scaleFactorForSizeToFit;
-                _pdfView.maxScaleFactor = 4.0;
+                _pdfView.minScaleFactor = 1.0;
+                _pdfView.maxScaleFactor = 2.0;
 
                 NSUInteger pageCount = [document pageCount];
 
@@ -122,6 +122,7 @@
                 }else {
                     NSLog(@"FRAME size is 0....");
                 }
+                
                 CGFloat scaleInitial;
                 scaleInitial = 1.0f;
                 if(!dualPage){
@@ -138,6 +139,7 @@
                     }
                 }
                  _pdfView.scaleFactor = scaleInitial;
+
                 if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
                 {
                     if (pageRectInitial.size.width > pageRectInitial.size.height) {
@@ -174,13 +176,13 @@
                 scale = 1.0f;
                 if(!dualPage){
                     if (parentRect.size.width / parentRect.size.height >= pageRect.size.width / pageRect.size.height) {
-                        scale = parentRect.size.height / pageRect.size.height;
+                        scale = (parentRect.size.height - 50) / pageRect.size.height;
                     } else {
                         scale = parentRect.size.width / pageRect.size.width;
                     }
                 }else{
                     if (parentRect.size.width / parentRect.size.height >= pageRect.size.width*2 / pageRect.size.height) {
-                        scale = parentRect.size.height / pageRect.size.height;
+                        scale = (parentRect.size.height - 50)/ pageRect.size.height;
                     } else {
                         scale = parentRect.size.width / (parentRect.size.width *2 )  ;
                     }
